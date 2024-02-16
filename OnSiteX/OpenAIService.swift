@@ -14,7 +14,7 @@ class OpenAIService {
     private init() {}
 
     func sendMessage(_ message: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
+        guard let url = URL(string: "https://api.openai.com/v1/completions") else {
             completion(.failure(URLError(.badURL)))
             return
         }
@@ -26,11 +26,11 @@ class OpenAIService {
 
         let body: [String: Any] = [
             "model": "gpt-3.5-turbo",
-            "messages": [
-                ["role": "system", "content": "Your system message here if any"],
+            "Messages": [
                 ["role": "user", "content": message]
             ]
         ]// Customize as needed
+        
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
