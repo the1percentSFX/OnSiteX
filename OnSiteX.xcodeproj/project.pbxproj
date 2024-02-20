@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		C91CAEEA2B732EA40011DA20 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CAEE92B732EA40011DA20 /* FirestoreService.swift */; };
 		C9C0BDD12B5CA2B900CA486D /* OnSiteXApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C0BDD02B5CA2B900CA486D /* OnSiteXApp.swift */; };
-		C9C0BDD32B5CA2B900CA486D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C0BDD22B5CA2B900CA486D /* ContentView.swift */; };
 		C9C0BDD52B5CA2BE00CA486D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9C0BDD42B5CA2BE00CA486D /* Assets.xcassets */; };
 		C9C0BDD82B5CA2BE00CA486D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9C0BDD72B5CA2BE00CA486D /* Preview Assets.xcassets */; };
 		C9C0BDE22B5CA2BF00CA486D /* OnSiteXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C0BDE12B5CA2BF00CA486D /* OnSiteXTests.swift */; };
@@ -21,6 +20,7 @@
 		C9E1631A2B71DDF1001C9CB6 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = C9E163192B71DDF1001C9CB6 /* FirebaseDatabase */; };
 		C9E1631C2B71DDF1001C9CB6 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C9E1631B2B71DDF1001C9CB6 /* FirebaseFirestore */; };
 		C9E1631E2B71DDF1001C9CB6 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = C9E1631D2B71DDF1001C9CB6 /* FirebaseStorage */; };
+		C9F4D1232B844CCA00196719 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F4D1222B844CCA00196719 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +44,6 @@
 		C91CAEE92B732EA40011DA20 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		C9C0BDCD2B5CA2B900CA486D /* OnSiteX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnSiteX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9C0BDD02B5CA2B900CA486D /* OnSiteXApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnSiteXApp.swift; sourceTree = "<group>"; };
-		C9C0BDD22B5CA2B900CA486D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C9C0BDD42B5CA2BE00CA486D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C9C0BDD72B5CA2BE00CA486D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C9C0BDDD2B5CA2BF00CA486D /* OnSiteXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OnSiteXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,6 +53,7 @@
 		C9C0BDED2B5CA2BF00CA486D /* OnSiteXUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnSiteXUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C9C0BDFA2B5CA36F00CA486D /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		C9E163142B71DAE7001C9CB6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C9F4D1222B844CCA00196719 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,9 +85,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C94432AA2B80394A001B07B8 /* ProCore */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ProCore;
+			sourceTree = "<group>";
+		};
+		C94432AB2B80395A001B07B8 /* MicrosoftGraph */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = MicrosoftGraph;
+			path = OnSiteX/MicrosoftGraph;
+			sourceTree = "<group>";
+		};
+		C94432AC2B80396F001B07B8 /* OpenAIService */ = {
+			isa = PBXGroup;
+			children = (
+				C9C0BDFA2B5CA36F00CA486D /* OpenAIService.swift */,
+			);
+			path = OpenAIService;
+			sourceTree = "<group>";
+		};
 		C9C0BDC42B5CA2B900CA486D = {
 			isa = PBXGroup;
 			children = (
+				C94432AA2B80394A001B07B8 /* ProCore */,
+				C94432AB2B80395A001B07B8 /* MicrosoftGraph */,
+				C94432AC2B80396F001B07B8 /* OpenAIService */,
 				C9C0BDCF2B5CA2B900CA486D /* OnSiteX */,
 				C9C0BDE02B5CA2BF00CA486D /* OnSiteXTests */,
 				C9C0BDEA2B5CA2BF00CA486D /* OnSiteXUITests */,
@@ -108,13 +134,12 @@
 		C9C0BDCF2B5CA2B900CA486D /* OnSiteX */ = {
 			isa = PBXGroup;
 			children = (
-				C91CAEE92B732EA40011DA20 /* FirestoreService.swift */,
 				C9C0BDD02B5CA2B900CA486D /* OnSiteXApp.swift */,
-				C9C0BDD22B5CA2B900CA486D /* ContentView.swift */,
+				C9F4D1222B844CCA00196719 /* ContentView.swift */,
+				C91CAEE92B732EA40011DA20 /* FirestoreService.swift */,
 				C9E163142B71DAE7001C9CB6 /* GoogleService-Info.plist */,
 				C9C0BDD42B5CA2BE00CA486D /* Assets.xcassets */,
 				C9C0BDD62B5CA2BE00CA486D /* Preview Content */,
-				C9C0BDFA2B5CA36F00CA486D /* OpenAIService.swift */,
 			);
 			path = OnSiteX;
 			sourceTree = "<group>";
@@ -284,9 +309,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9C0BDD32B5CA2B900CA486D /* ContentView.swift in Sources */,
 				C91CAEEA2B732EA40011DA20 /* FirestoreService.swift in Sources */,
 				C9C0BDD12B5CA2B900CA486D /* OnSiteXApp.swift in Sources */,
+				C9F4D1232B844CCA00196719 /* ContentView.swift in Sources */,
 				C9C0BDFB2B5CA36F00CA486D /* OpenAIService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

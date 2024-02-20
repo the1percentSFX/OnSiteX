@@ -71,13 +71,19 @@ extension Note {
 
 class FirestoreService {
     private let db = Firestore.firestore()
-
+    
     func addNote(_ note: Note, completion: @escaping (Bool, Error?) -> Void) {
         db.collection("notes").document(note.id).setData(note.dictionary) { error in
             completion(error == nil, error)
         }
     }
-
+    
+    func deleteNote(_ noteId: String, completion: @escaping (Bool, Error?) -> Void) {
+        self.db.collection("notes").document(noteId).delete { error in
+            completion(error == nil, error)
+        }
+    }
+    
     func fetchNotes(completion: @escaping ([Note]?, Error?) -> Void) {
         db.collection("notes").getDocuments { snapshot, error in
             if let error = error {
@@ -85,13 +91,13 @@ class FirestoreService {
                 completion(nil, error)
                 return
             }
-
+            
             guard let documents = snapshot?.documents else {
                 print("No documents found")
                 completion([], nil)
                 return
             }
-
+            
             let notes = documents.compactMap { Note(document: $0) }
             completion(notes, nil)
         }
@@ -103,10 +109,13 @@ struct HomeView: View {
     @State private var noteText: String = ""
     @State private var isChatPresented = false
     @State private var isSettingsPresented = false // For settings screen presentation
-    @State private var firestoreService = FirestoreService()
+    var firestoreService = FirestoreService()
     
     // Dummy user initials - replace with actual user data
     let userInitials = "VR"
+    func delete(at offsets: IndexSet) {
+        
+    }
     
     var addNoteClosure: (Note) -> Void
     var body: some View {
@@ -122,6 +131,7 @@ struct HomeView: View {
                                 .font(.subheadline)
                         }
                     }
+                    .onDelete(perform: delete)
                 }
                 HStack {
                     TextField("Type your note here...", text: $noteText)
@@ -170,7 +180,7 @@ struct HomeView: View {
             }
         }
     }
-
+    
     private func startChat() {
         guard !noteText.isEmpty else { return }
         // Use NoteType.chat and Sender.user explicitly if the compiler can't infer the enum type.
@@ -191,122 +201,124 @@ struct HomeView: View {
         }
     }
 }
+                
 
-struct ContentView: View {
-    @State private var selectedTab: Tab = .home
-    @State private var notes: [Note] = []
-
-    var body: some View {
-        TabView(selection: $selectedTab) {
-            NavigationStack {
-                HomeView(notes: $notes, addNoteClosure: addNote)
+            struct ContentView: View {
+                @State private var selectedTab: Tab = .home
+                @State private var notes: [Note] = []
+                
+                var body: some View {
+                    TabView(selection: $selectedTab) {
+                        NavigationStack {
+                            HomeView(notes: $notes, addNoteClosure: addNote)
+                        }
+                        .tabItem {
+                            Image(systemName: "building.2")
+                        }
+                        .tag(Tab.home)
+                        
+                        NavigationStack {
+                            CalendarView(notes: $notes)
+                        }
+                        .tabItem {
+                            Image(systemName: Tab.calendar.iconName)
+                        }
+                        .tag(Tab.calendar)
+                    }
+                    .preferredColorScheme(.dark)
+                    .onAppear {
+                        fetchNotes()
+                    }
+                }
+                
+                func fetchNotes() {
+                    FirestoreService().fetchNotes { result, _ in
+                        if let result = result {
+                            self.notes = result
+                        }
+                    }
+                }
+                
+                func addNote(_ note: Note) {
+                    FirestoreService().addNote(note) { success, _ in
+                        if success {
+                            fetchNotes()
+                        }
+                    }
+                }
+                
             }
-            .tabItem {
-                Image(systemName: "building.2")
+            struct ContentView_Previews: PreviewProvider {
+                static var previews: some View {
+                    ContentView()
+                }
             }
-            .tag(Tab.home)
-
-            NavigationStack {
-                CalendarView(notes: $notes)
-            }
-            .tabItem {
-                Image(systemName: Tab.calendar.iconName)
-            }
-            .tag(Tab.calendar)
-        }
-        .preferredColorScheme(.dark)
-        .onAppear {
-            fetchNotes()
-        }
-    }
-
-    func fetchNotes() {
-        FirestoreService().fetchNotes { result, _ in
-            if let result = result {
-                self.notes = result
-            }
-        }
-    }
-
-    func addNote(_ note: Note) {
-        FirestoreService().addNote(note) { success, _ in
-            if success {
-                fetchNotes()
-            }
-        }
-    }
-}
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
-
-enum Tab {
-    case home
-    case calendar
-    
-    var iconName: String {
-        switch self {
-        case .home:
-            return "house"
-        case .calendar:
-            return "calendar"
-        }
-    }
-}
-struct CalendarView: View {
-    @Binding var notes: [Note]
-    @State private var selectedDate = Date()
-    @State private var showingDetail = false
-    @State private var selectedNote: Note?
-    
-    var body: some View {
-        VStack {
-            DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
-                .datePickerStyle(.graphical)
-                .padding()
             
-            List(notes.filter { shouldDisplay(note: $0) }) { note in
-                Button(action: {
-                    self.selectedNote = note
-                    self.showingDetail.toggle()
-                }) {
-                    VStack(alignment: .leading) {
-                        Text(note.title)
-                            .font(.headline)
-                        Text(note.detail)
-                            .font(.subheadline)
+            enum Tab {
+                case home
+                case calendar
+                
+                var iconName: String {
+                    switch self {
+                    case .home:
+                        return "house"
+                    case .calendar:
+                        return "calendar"
                     }
                 }
             }
-        }
-        .navigationTitle("Calendar")
-        .sheet(isPresented: $showingDetail) {
-            if let selectedNote = selectedNote {
-                NoteDetailView(note: selectedNote)
+            struct CalendarView: View {
+                @Binding var notes: [Note]
+                @State private var selectedDate = Date()
+                @State private var showingDetail = false
+                @State private var selectedNote: Note?
+                
+                var body: some View {
+                    VStack {
+                        DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
+                            .datePickerStyle(.graphical)
+                            .padding()
+                        
+                        List(notes.filter { shouldDisplay(note: $0) }) { note in
+                            Button(action: {
+                                self.selectedNote = note
+                                self.showingDetail.toggle()
+                            }) {
+                                VStack(alignment: .leading) {
+                                    Text(note.title)
+                                        .font(.headline)
+                                    Text(note.detail)
+                                        .font(.subheadline)
+                                }
+                            }
+                        }
+                    }
+                    .navigationTitle("Calendar")
+                    .sheet(isPresented: $showingDetail) {
+                        if let selectedNote = selectedNote {
+                            NoteDetailView(note: selectedNote)
+                        }
+                    }
+                }
+                
+                private func shouldDisplay(note: Note) -> Bool {
+                    return Calendar.current.isDate(note.date, inSameDayAs: selectedDate) && (note.type == .regular || note.type == .chat)
+                }
             }
-        }
-    }
-
-    private func shouldDisplay(note: Note) -> Bool {
-        return Calendar.current.isDate(note.date, inSameDayAs: selectedDate) && (note.type == .regular || note.type == .chat)
-    }
-}
-
-struct NoteDetailView: View {
-    var note: Note
+            
+            struct NoteDetailView: View {
+                var note: Note
+                
+                var body: some View {
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text(note.title)
+                            .font(.largeTitle)
+                        Text(note.detail)
+                            .font(.title2)
+                        Spacer()
+                    }
+                    .padding()
+                    .navigationTitle("Note Details")
+                }
+            }
     
-    var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text(note.title)
-                .font(.largeTitle)
-            Text(note.detail)
-                .font(.title2)
-            Spacer()
-        }
-        .padding()
-        .navigationTitle("Note Details")
-    }
-}
-
